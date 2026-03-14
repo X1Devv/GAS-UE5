@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GASUE5\AttributeSets\BasicAttributeSet.h"
-#include "AbilitySystemComponent.h"
+#include "GASUE5/GASAbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 
 // Sets default values
@@ -15,7 +15,7 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Add the ability system component
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UGASAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(AscReplicationMode);
 	
@@ -94,14 +94,14 @@ TArray<FGameplayAbilitySpecHandle> ABaseCharacter::GrantAbilities(
 	{
 		return TArray<FGameplayAbilitySpecHandle>();
 	}
-	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
+	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
 	for (TSubclassOf<UGameplayAbility> Ability : AbilitiesTOGrant)
 	{
 		FGameplayAbilitySpecHandle SpecHandle =  AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
-		AbilitySpecHandles.Add(SpecHandle);
+		AbilityHandles.Add(SpecHandle);
 	}
 	SendAbilitiesChangedEvent();
-	return AbilitySpecHandles;
+	return AbilityHandles;
 }
 void ABaseCharacter::RemoveAbilities(TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove)
 {
