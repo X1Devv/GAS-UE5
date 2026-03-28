@@ -35,7 +35,20 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes", ReplicatedUsing = OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS_BASIC(UBasicAttributeSet, MaxMana);
+	//Damage attributes
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS_BASIC(UBasicAttributeSet, Damage);
 
+	//Shield attributes
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData Shield;
+
+	ATTRIBUTE_ACCESSORS_BASIC(UBasicAttributeSet, Shield);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData MaxShield;
+	ATTRIBUTE_ACCESSORS_BASIC(UBasicAttributeSet, MaxShield);
 
 public:
 	UFUNCTION()

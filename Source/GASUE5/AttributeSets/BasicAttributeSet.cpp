@@ -11,6 +11,9 @@ UBasicAttributeSet::UBasicAttributeSet()
 	MaxHealth = 100.f;
 	Mana = 100.f;
 	MaxMana = 100.f;
+	Damage = 0.0f;
+	Shield = 0.0f;
+	MaxShield = 100.0f;
 }
 
 void UBasicAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,12 +38,38 @@ void UBasicAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute,
 	else if (Attribute == GetManaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	} else if (Attribute == GetShieldAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f,GetMaxShield());
 	}
 }
 
 void UBasicAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+	
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+		float TotalDamage = GetDamage();
+		SetDamage(0.0f);
+		
+		float CurrentShield = GetShield();
+		
+		if (CurrentShield > 0.0f)
+		{
+			SetShield(CurrentShield - TotalDamage);
+			float RemainingDamage = TotalDamage - CurrentShield;
+			
+			if (RemainingDamage > 0.0f)
+			{
+				SetHealth(GetHealth() - RemainingDamage);
+			}
+		}
+		else
+		{
+			SetHealth(GetHealth() - TotalDamage);
+		}
+	}
 	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
